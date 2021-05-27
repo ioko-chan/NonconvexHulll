@@ -66,59 +66,29 @@ public:
 
 	bool IsPointHull2(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
 		int count = 0;
-		for (int i = 0; i < _pickets.size()-1; i++) {
+		for (int i = 0; i < _pickets.size() - 1; i++) {
 
-		/*	if (_pickets[i].coord.y == _pickets[i + 1].coord.y)
+			if (_pickets[i].coord.y == _pickets[i + 1].coord.y)
 				continue;
-
 			POINTFLOAT maxY;
-			POINTFLOAT minX;
-
+			POINTFLOAT maxX;
 			POINTFLOAT minY;
-
-			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
-				maxY = _pickets[i].coord;
-			}
-
-			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
-				maxY = _pickets[i+1].coord;
-			}
-
-
-
-			if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
-				minX = _pickets[i+1].coord;
-			}
-
-			if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
-				minX = _pickets[i ].coord;
-			}
-
 			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
 				minY = _pickets[i + 1].coord;
 			}
-
 
 
 			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
 				minY = _pickets[i].coord;
 			}
 
-			if (currentPoint.y == maxY.y && currentPoint.x < minX.x) {
-				count++;
-				continue;
+			if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
+				maxX = _pickets[i + 1].coord;
 			}
 
-
-
-			if (currentPoint.y == minY.y) {
-				
-				continue;
-			}*/
-
-			POINTFLOAT maxY;
-			maxY.x = 99;
-			maxY.y = 99;
+			if (_pickets[i].coord.x >= _pickets[i + 1].coord.x) {
+				maxX = _pickets[i].coord;
+			}
 			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
 				maxY = _pickets[i].coord;
 			}
@@ -126,23 +96,23 @@ public:
 			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
 				maxY = _pickets[i + 1].coord;
 			}
-			if (currentPoint.y == _pickets[i].coord.y && currentPoint.y == _pickets[i + 1].coord.y) {
+			if (currentPoint.y == maxY.y && currentPoint.x < maxX.x) {
+				count++;
+				continue;
+			}
+			if (currentPoint.y == minY.y) {
 				continue;
 			}
 
-			if (currentPoint.y == maxY.y) {
-				count++;
-			}
-
 			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
-				if ((currentPoint.y > _pickets[i].coord.y && currentPoint.y < _pickets[i + 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i].coord, _pickets[i + 1].coord), CoordToVectorCoord(_pickets[i+1].coord, currentPoint)) <= 0)) {
+				if ((currentPoint.y > _pickets[i].coord.y && currentPoint.y < _pickets[i + 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i].coord, currentPoint), CoordToVectorCoord(_pickets[i].coord, _pickets[i + 1].coord)) < 0)) {
 					count++;
 				}
 			}
 
 
 			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
-				if ((currentPoint.y > _pickets[i+1].coord.y && currentPoint.y < _pickets[i ].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i+1].coord, _pickets[i].coord), CoordToVectorCoord(_pickets[i].coord, currentPoint)) <= 0)) {
+				if ((currentPoint.y > _pickets[i + 1].coord.y && currentPoint.y < _pickets[i].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i + 1].coord, currentPoint), CoordToVectorCoord(_pickets[i + 1].coord, _pickets[i].coord)) < 0)) {
 					count++;
 				}
 			}
@@ -152,95 +122,71 @@ public:
 		{
 
 
-			/*	
 
-			POINTFLOAT maxY;
-
-			POINTFLOAT maxX;
-			POINTFLOAT minX;
-
-			POINTFLOAT minY;
-
-			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
-				maxY = _pickets[_pickets.size() - 1].coord;
-			}
-
-			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
-				maxY = _pickets[0].coord;
-			}
-
-
-
-			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
-				minX = _pickets[0].coord;
-			}
-
-			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
-				minX = _pickets[_pickets.size() - 1].coord;
-			}
-
-
-
-			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
-				maxX = _pickets[0].coord;
-			}
-
-			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
-				maxX = _pickets[_pickets.size() - 1].coord;
-			}
-
-			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
-				minY = _pickets[0].coord;
-			}
-
-
-
-			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
-				minY = _pickets[_pickets.size() - 1].coord;
-			}
-
-			if (currentPoint.y == maxY.y && currentPoint.x < minX.x) {
-				count++;
-			}
-
-			if (currentPoint.y == maxY.y && currentPoint.x > maxX.x) {
-				count++;
-			}*/
-			POINTFLOAT maxY;
-			if (_pickets[0].coord.y > _pickets[_pickets.size() - 1].coord.y) {
-				maxY = _pickets[0].coord;
-			}
-
-			if (currentPoint.y == _pickets[0].coord.y && currentPoint.y == _pickets[_pickets.size() - 1].coord.y) {
-
+			if (_pickets[_pickets.size() - 1].coord.y == _pickets[0].coord.y) {
 			}
 			else {
-				if (_pickets[0].coord.y < _pickets[_pickets.size() - 1].coord.y) {
-					maxY = _pickets[_pickets.size() - 1].coord;
-				}
-				if (currentPoint.y == maxY.y) {
-					count++;
+				POINTFLOAT maxY;
+				POINTFLOAT maxX;
+				POINTFLOAT minY;
+				if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+					minY = _pickets[0].coord;
 				}
 
 
 				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
-					if ((currentPoint.y >= _pickets[_pickets.size() - 1].coord.y && currentPoint.y < _pickets[0].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, _pickets[0].coord), CoordToVectorCoord(_pickets[0].coord, currentPoint)) <= 0)) {
-						count++;
-					}
+					minY = _pickets[_pickets.size() - 1].coord;
 				}
 
-
-				if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
-					if ((currentPoint.y >= _pickets[0].coord.y && currentPoint.y < _pickets[_pickets.size() - 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[0].coord, _pickets[_pickets.size() - 1].coord), CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, currentPoint)) <= 0)) {
-						count++;
-					}
+				if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
+					maxX = _pickets[0].coord;
 				}
+
+				if (_pickets[_pickets.size() - 1].coord.x >= _pickets[0].coord.x) {
+					maxX = _pickets[_pickets.size() - 1].coord;
+				}
+				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+					maxY = _pickets[0].coord;
+				}
+
+				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+					maxY = _pickets[0].coord;
+				}
+				if (currentPoint.y == maxY.y && currentPoint.x < maxX.x) {
+					count++;
+					
+				}
+				else {
+					
+					
+						if (currentPoint.y == minY.y) {
+							//continue;
+						}
+						else {
+
+
+
+							if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+								if ((currentPoint.y >= _pickets[_pickets.size() - 1].coord.y && currentPoint.y < _pickets[0].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, currentPoint), CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, _pickets[0].coord)) <= 0)) {
+									count++;
+								}
+							}
+
+
+							if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+								if ((currentPoint.y >= _pickets[0].coord.y && currentPoint.y < _pickets[_pickets.size() - 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[0].coord, currentPoint), CoordToVectorCoord(_pickets[0].coord, _pickets[_pickets.size() - 1].coord)) <= 0)) {
+									count++;
+								}
+							}
+						}
+					
+				}
+
 			}
-
 		}
 
 
-		if (count % 2 == 0 ) {
+		if (count % 2 == 0|| count==0) {
 			return false;
 		}
 		else {
