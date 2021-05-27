@@ -45,8 +45,13 @@ public:
 	}
 
 	double Angle(POINTFLOAT ab, POINTFLOAT cd) {
-		double res = (ab.x*cd.x + ab.y*cd.y) / (Abs(ab) * Abs(cd));
-		return res;
+		/*double res = (ab.x*cd.x + ab.y*cd.y) / (Abs(ab) * Abs(cd));
+		if (res < -1)
+			res = -1;
+		else if(res>1) {
+			res = 1;
+		}*/
+		return ab.x*cd.y - cd.x*ab.y;
 	}
 
 	double ScalProiz(POINTFLOAT ab , POINTFLOAT cd) {
@@ -55,8 +60,192 @@ public:
 	}
 
 	double VectorProis(POINTFLOAT ab, POINTFLOAT cd) {
-		double res = Abs(ab) * Abs(ab) * sin(Angle(ab, cd));
+		double res = ab.x * cd.y - cd.x * ab.y;
 		return res;
+	}
+
+	bool IsPointHull2(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
+		int count = 0;
+		for (int i = 0; i < _pickets.size()-1; i++) {
+
+		/*	if (_pickets[i].coord.y == _pickets[i + 1].coord.y)
+				continue;
+
+			POINTFLOAT maxY;
+			POINTFLOAT minX;
+
+			POINTFLOAT minY;
+
+			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+				maxY = _pickets[i].coord;
+			}
+
+			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+				maxY = _pickets[i+1].coord;
+			}
+
+
+
+			if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
+				minX = _pickets[i+1].coord;
+			}
+
+			if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
+				minX = _pickets[i ].coord;
+			}
+
+			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+				minY = _pickets[i + 1].coord;
+			}
+
+
+
+			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+				minY = _pickets[i].coord;
+			}
+
+			if (currentPoint.y == maxY.y && currentPoint.x < minX.x) {
+				count++;
+				continue;
+			}
+
+
+
+			if (currentPoint.y == minY.y) {
+				
+				continue;
+			}*/
+
+			POINTFLOAT maxY;
+			maxY.x = 99;
+			maxY.y = 99;
+			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+				maxY = _pickets[i].coord;
+			}
+
+			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+				maxY = _pickets[i + 1].coord;
+			}
+			if (currentPoint.y == _pickets[i].coord.y && currentPoint.y == _pickets[i + 1].coord.y) {
+				continue;
+			}
+
+			if (currentPoint.y == maxY.y) {
+				count++;
+			}
+
+			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+				if ((currentPoint.y > _pickets[i].coord.y && currentPoint.y < _pickets[i + 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i].coord, _pickets[i + 1].coord), CoordToVectorCoord(_pickets[i+1].coord, currentPoint)) <= 0)) {
+					count++;
+				}
+			}
+
+
+			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+				if ((currentPoint.y > _pickets[i+1].coord.y && currentPoint.y < _pickets[i ].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i+1].coord, _pickets[i].coord), CoordToVectorCoord(_pickets[i].coord, currentPoint)) <= 0)) {
+					count++;
+				}
+			}
+
+		}
+
+		{
+
+
+			/*	
+
+			POINTFLOAT maxY;
+
+			POINTFLOAT maxX;
+			POINTFLOAT minX;
+
+			POINTFLOAT minY;
+
+			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+				maxY = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+				maxY = _pickets[0].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
+				minX = _pickets[0].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
+				minX = _pickets[_pickets.size() - 1].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
+				maxX = _pickets[0].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
+				maxX = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+				minY = _pickets[0].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+				minY = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (currentPoint.y == maxY.y && currentPoint.x < minX.x) {
+				count++;
+			}
+
+			if (currentPoint.y == maxY.y && currentPoint.x > maxX.x) {
+				count++;
+			}*/
+			POINTFLOAT maxY;
+			if (_pickets[0].coord.y > _pickets[_pickets.size() - 1].coord.y) {
+				maxY = _pickets[0].coord;
+			}
+
+			if (currentPoint.y == _pickets[0].coord.y && currentPoint.y == _pickets[_pickets.size() - 1].coord.y) {
+
+			}
+			else {
+				if (_pickets[0].coord.y < _pickets[_pickets.size() - 1].coord.y) {
+					maxY = _pickets[_pickets.size() - 1].coord;
+				}
+				if (currentPoint.y == maxY.y) {
+					count++;
+				}
+
+
+				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+					if ((currentPoint.y >= _pickets[_pickets.size() - 1].coord.y && currentPoint.y < _pickets[0].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, _pickets[0].coord), CoordToVectorCoord(_pickets[0].coord, currentPoint)) <= 0)) {
+						count++;
+					}
+				}
+
+
+				if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+					if ((currentPoint.y >= _pickets[0].coord.y && currentPoint.y < _pickets[_pickets.size() - 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[0].coord, _pickets[_pickets.size() - 1].coord), CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, currentPoint)) <= 0)) {
+						count++;
+					}
+				}
+			}
+
+		}
+
+
+		if (count % 2 == 0 ) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 	bool IsPointInHull(POINTFLOAT currentPoint) {
@@ -72,7 +261,7 @@ public:
 		fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
 
 
-		if (fi < 0.8*PI && fi > -PI*0.8)
+		if (fi < 0.7 * PI && fi > -PI * 0.7)
 			flag = true;
 		else
 			flag = false;
@@ -160,7 +349,7 @@ public:
 		fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
 
 
-		if (fi < 0)
+		if (fi < 0.7 * PI && fi > -PI * 0.7)
 			flag = true;
 		else
 			flag = false;
@@ -180,7 +369,7 @@ public:
 		for (auto u : _pickets) {
 			for (auto p : u.pointsSheellPickets) {
 				if (_pickets.size() > 2) {
-					if (!IsPointInHull(p)) {
+					if (!IsPointHull2(p,_pickets)) {
 						_NonConvexHull1.push_back(p);
 						std::cout << p.x << " " << p.y << std::endl;
 					}

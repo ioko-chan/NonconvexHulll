@@ -58,6 +58,55 @@ public:
 		return res2;
 	}
 
+
+	POINTFLOAT CoordToVectorCoord(POINTFLOAT a, POINTFLOAT b) {
+		POINTFLOAT ab;
+		ab.x = b.x - a.x;
+		ab.y = b.y - a.y;
+
+		return ab;
+	}
+
+	double Abs(POINTFLOAT ab) {
+		double res = sqrt(pow(ab.x, 2) + pow(ab.y, 2));
+		return res;
+	}
+
+	double Angle(POINTFLOAT ab, POINTFLOAT cd) {
+		double res = (ab.x * cd.x + ab.y * cd.y) / (Abs(ab) * Abs(cd));
+		return res;
+	}
+
+	double ScalProiz(POINTFLOAT ab, POINTFLOAT cd) {
+		double res = Abs(ab) * Abs(ab) * cos(Angle(ab, cd));
+		return res;
+	}
+
+	double VectorProis(POINTFLOAT ab, POINTFLOAT cd) {
+		double res = Abs(ab) * Abs(ab) * sin(Angle(ab, cd));
+		return res;
+	}
+
+	bool IsPointInHull(POINTFLOAT currentPoint) {
+		bool flag = 0;
+		double fi = 0;
+		for (int i = 0; i < _pickets.size() - 1; i++) {
+			POINTFLOAT cur1 = CoordToVectorCoord(_coordsPickets[i].coord, currentPoint);
+			POINTFLOAT cur2 = CoordToVectorCoord(_coordsPickets[i + 1].coord, currentPoint);
+			fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
+		}
+		POINTFLOAT cur1 = CoordToVectorCoord(_coordsPickets[_pickets.size() - 1].coord, currentPoint);
+		POINTFLOAT cur2 = CoordToVectorCoord(_coordsPickets[0].coord, currentPoint);
+		fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
+
+
+		if (fi < 0.8 * PI && fi > -PI * 0.8)
+			flag = true;
+		else
+			flag = false;
+		return flag;
+	}
+
 	void Polygon() {
 		POINTFLOAT centroid;
 		centroid.x = 0;
@@ -77,6 +126,12 @@ public:
 			_pickets.push_back(_coordsPickets[i].coord);
 		}
 
+
+			
+
+		
+
+		
 	}
 
 	std::vector<Picket> ListOfDistributedPoints() {

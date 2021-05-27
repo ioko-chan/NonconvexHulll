@@ -12,6 +12,56 @@
 int WIDTH = 1200;
 int HEIGHT = 800; //указываем размеры окна
 
+
+POINTFLOAT CoordToVectorCoord(POINTFLOAT a, POINTFLOAT b) {
+	POINTFLOAT ab;
+	ab.x = b.x - a.x;
+	ab.y = b.y - a.y;
+
+	return ab;
+}
+
+double Abs(POINTFLOAT ab) {
+	double res = sqrt(pow(ab.x, 2) + pow(ab.y, 2));
+	return res;
+}
+
+double Angle(POINTFLOAT ab, POINTFLOAT cd) {
+	double res = (ab.x * cd.x + ab.y * cd.y) / (Abs(ab) * Abs(cd));
+	return res;
+}
+
+double ScalProiz(POINTFLOAT ab, POINTFLOAT cd) {
+	double res = Abs(ab) * Abs(ab) * cos(Angle(ab, cd));
+	return res;
+}
+
+double VectorProis(POINTFLOAT ab, POINTFLOAT cd) {
+	double res = Abs(ab) * Abs(ab) * sin(Angle(ab, cd));
+	return res;
+}
+
+bool IsPointInHull(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
+	bool flag = 0;
+	double fi = 0;
+	for (int i = 0; i < _pickets.size() - 1; i++) {
+		POINTFLOAT cur1 = CoordToVectorCoord(_pickets[i].coord, currentPoint);
+		POINTFLOAT cur2 = CoordToVectorCoord(_pickets[i + 1].coord, currentPoint);
+		fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
+	}
+	POINTFLOAT cur1 = CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, currentPoint);
+	POINTFLOAT cur2 = CoordToVectorCoord(_pickets[0].coord, currentPoint);
+	fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
+
+
+	if (fi < 0.8 * PI && fi > -PI * 0.8)
+		flag = true;
+	else
+		flag = false;
+	return flag;
+}
+
+
 int main() {
 	if (!glfwInit()) {
 		std::cout << "Failed to initialize GLFW!!!" << std::endl;
@@ -33,7 +83,7 @@ int main() {
 	//  вводим пикеты
 	std::vector<POINTFLOAT> inputPickets;
 	int countPickets;
-	std::cout << "Number of pickets  ("<<inputPoints.size()/8+1<< " desirable ) : "<< std::endl;
+	std::cout << "Number of pickets  : "<< std::endl;
 	std::cin >> countPickets;
 	POINTFLOAT picket;
 	for (size_t i = 0; i < countPickets; i++) {
@@ -51,6 +101,8 @@ int main() {
 
 
 	for (int i = 0; i < inputPickets.size(); i++) {
+
+
 		JarvisAlgorithm s(outputPicketFiring.ListOfDistributedPointsForShell(i),true, PicketFiring);
 		q.push_back(s);
 	}
@@ -68,7 +120,14 @@ int main() {
 		//wer.push_back(q[i].HullOfPickets(PicketFiring[i].pointsSheellPickets, PicketFiring));
 		//wer1.push_back(q[i].HullOfPickets1(PicketFiring[i].pointsSheellPickets, PicketFiring));
 	}
-	
+	POINTFLOAT zxc;
+	zxc.x = 0;
+	zxc.y = 0;
+	std::vector<POINTFLOAT> newPic;
+	if (IsPointInHull(zxc, PicketFiring)) {
+		JarvisAlgorithm ea(inputPickets, false, PicketFiring);
+		newPic = ea.Shell();
+	}
 
 	NonconvexHullAlgorithm output(PicketFiring, a.Shell());
 	auto out = output.NonConvexHull();
@@ -102,19 +161,21 @@ int main() {
 		glColor3f(1, 1, 0);
 		ShowPoints(wer);
 		//ShowPoints(wer1);
+
 		for (int i = 0; i < inputPickets.size();i++) {
 			
 			ShowLinesToPoints(q[i].Shell());
 		}
 		glColor3f(1, 0, 0);
-		if (inputPickets.size() > 1) {
+		if (inputPickets.size() > 1) { // отрисовываем оболочки пикетов 
 			
+
 			ShowLinesToPoints(outputPicketFiring.ListOfDistributedPicketsForShell());
 		}
 		ShowPoints(inputPickets);
 		glColor3f(0.7, 0, 1);
 		//ShowLinesToPoints(out);
-		ShowLinesToPoints(shell);
+		ShowLinesToPoints(shell);// отрисовываем оболочку выпуклую
 
 		glfwSwapBuffers(window);//меняем текущей буффер
 		glfwPollEvents();
@@ -131,8 +192,8 @@ int main() {
 		// рисуем графики
 		glColor3f(0, 0, 1);
 		ShowPoints(out);
-		ShowLinesToPoints(out);
-		ShowLinesToPoints(shell);
+		ShowLinesToPoints(out);// отрисовываем оболочку невыпуклую
+		//ShowLinesToPoints(shell);// отрисовываем оболочку выпуклую
 		glfwSwapBuffers(window2);//меняем текущей буффер
 		glfwPollEvents();
 

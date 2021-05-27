@@ -87,12 +87,16 @@ public:
 	}
 
 	double Abs(POINTFLOAT ab) {
-		double res = sqrt(pow(ab.x, 2) + pow(ab.y, 2));
+		double qw = pow(ab.x, 2);
+		double wze = pow(ab.y, 2);
+		double res = sqrt(qw+wze);
 		return res;
 	}
 
 	double Angle(POINTFLOAT ab, POINTFLOAT cd) {
-		double res = (ab.x * cd.x + ab.y * cd.y) / (Abs(ab) * Abs(cd));
+		double as = (ab.x * cd.x + ab.y * cd.y);
+		double ll = (Abs(ab) * Abs(cd));
+		double res = as /ll ;
 		return res;
 	}
 
@@ -102,8 +106,188 @@ public:
 	}
 
 	double VectorProis(POINTFLOAT ab, POINTFLOAT cd) {
-		double res = Abs(ab) * Abs(ab) * sin(Angle(ab, cd));
+		double res = ab.x * cd.y - cd.x * ab.y;
 		return res;
+	}
+	bool IsPointHull2(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
+		int count = 0;
+		for (int i = 0; i < _pickets.size() - 1; i++) {
+
+				if (_pickets[i].coord.y == _pickets[i + 1].coord.y)
+					continue;
+				POINTFLOAT maxY;
+				if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+					maxY = _pickets[i].coord;
+				}
+
+				if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+					maxY = _pickets[i + 1].coord;
+				}
+				if (currentPoint.y == _pickets[i].coord.y && currentPoint.y == _pickets[i + 1].coord.y) {
+					continue;
+				}
+				if (currentPoint.y == maxY.y) {
+					count++;
+				}
+
+				/*POINTFLOAT maxY;
+				POINTFLOAT minX;
+				POINTFLOAT maxX;
+				POINTFLOAT minY;
+
+				
+
+				if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
+					maxX = _pickets[i].coord;
+				}
+
+				if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
+					maxX = _pickets[i + 1].coord;
+				}
+
+				if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
+					minX = _pickets[i+1].coord;
+				}
+
+				if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
+					minX = _pickets[i ].coord;
+				}
+
+				if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+					minY = _pickets[i + 1].coord;
+				}
+
+
+
+				if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+					minY = _pickets[i].coord;
+				}
+
+				if (currentPoint.y == maxY.y && currentPoint.x > maxX.x) {
+					count++;
+					continue;
+				}
+
+
+
+				if (currentPoint.y == minY.y) {
+
+					continue;
+				}*/
+
+
+
+			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
+				if ((currentPoint.y > _pickets[i].coord.y && currentPoint.y < _pickets[i + 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i].coord, _pickets[i + 1].coord), CoordToVectorCoord(_pickets[i + 1].coord, currentPoint)) <= 0)) {
+					count++;
+				}
+			}
+
+
+			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
+				if ((currentPoint.y > _pickets[i + 1].coord.y && currentPoint.y < _pickets[i].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[i + 1].coord, _pickets[i].coord), CoordToVectorCoord(_pickets[i].coord, currentPoint)) <= 0)) {
+					count++;
+				}
+			}
+
+		}
+
+		{
+
+
+			/*
+
+			
+
+			POINTFLOAT maxX;
+			POINTFLOAT minX;
+
+			POINTFLOAT minY;
+
+			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+				maxY = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+				maxY = _pickets[0].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
+				minX = _pickets[0].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
+				minX = _pickets[_pickets.size() - 1].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.x < _pickets[0].coord.x) {
+				maxX = _pickets[0].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.x > _pickets[0].coord.x) {
+				maxX = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+				minY = _pickets[0].coord;
+			}
+
+
+
+			if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+				minY = _pickets[_pickets.size() - 1].coord;
+			}
+
+			if (currentPoint.y == maxY.y && currentPoint.x < minX.x) {
+				count++;
+			}
+
+			if (currentPoint.y == maxY.y && currentPoint.x > maxX.x) {
+				count++;
+			}*/
+
+			POINTFLOAT maxY;
+			if (_pickets[0].coord.y > _pickets[_pickets.size() - 1].coord.y) {
+				maxY = _pickets[0].coord;
+			}
+			if (currentPoint.y == _pickets[0].coord.y && currentPoint.y == _pickets[_pickets.size() - 1].coord.y) {
+				
+			}
+			else {
+				if (_pickets[0].coord.y < _pickets[_pickets.size() - 1].coord.y) {
+					maxY = _pickets[_pickets.size() - 1].coord;
+				}
+				if (currentPoint.y == maxY.y) {
+					count++;
+				}
+
+
+				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
+					if ((currentPoint.y >= _pickets[_pickets.size() - 1].coord.y && currentPoint.y < _pickets[0].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, _pickets[0].coord), CoordToVectorCoord(_pickets[0].coord, currentPoint)) <= 0)) {
+						count++;
+					}
+				}
+
+
+				if (_pickets[_pickets.size() - 1].coord.y > _pickets[0].coord.y) {
+					if ((currentPoint.y >= _pickets[0].coord.y && currentPoint.y < _pickets[_pickets.size() - 1].coord.y) && (VectorProis(CoordToVectorCoord(_pickets[0].coord, _pickets[_pickets.size() - 1].coord), CoordToVectorCoord(_pickets[_pickets.size() - 1].coord, currentPoint)) <= 0)) {
+						count++;
+					}
+				}
+			}
+		}
+
+
+		if (count % 2 == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 	bool IsPointInHull(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
@@ -119,7 +303,7 @@ public:
 		fi += atan2(VectorProis(cur1, cur2), ScalProiz(cur1, cur2));
 
 
-		if (fi < 0.8 * PI && fi > -PI * 0.8)
+		if (fi < 0.7 * PI && fi > -PI * 0.7)
 			flag = true;
 		else
 			flag = false;
@@ -174,7 +358,7 @@ public:
 		if (a.y == b.y)
 			k1 = 0;
 		else {
-			k1 = (b.y - a.y) / (b.x-a.x);
+		k1 = (b.y - a.y) / (b.x - a.x);
 		}
 
 		if (d.y == c.y)
@@ -196,7 +380,7 @@ public:
 	}
 
 
-	std::vector<POINTFLOAT> OutShell(std::vector<POINTFLOAT> beginpoint,std::vector<Picket> pikets) {
+	std::vector<POINTFLOAT> OutShell(std::vector<POINTFLOAT> beginpoint, std::vector<Picket> pikets) {
 		for (int i = 0; i < pikets.size(); i++) {
 
 
@@ -255,28 +439,69 @@ public:
 			} while (currentPeack2.x != minY.x && currentPeack2.y != minY.y);
 
 			for (int i = 0; i < _shell.size() - 1; i++) {
-				for (int j = i +1 ; j < _shell.size(); j++) {
+				for (int j = i + 1; j < _shell.size(); j++) {
 					if (_shell[i].x == _shell[j].x && _shell[i].y == _shell[j].y) {
-						_shell.erase(_shell.begin() +j);
+						_shell.erase(_shell.begin() + j);
 					}
 				}
 			}
+			POINTFLOAT Proverka = _shell[0];
+			
+			bool one = false;
 			if (_isShellPoint) {
-				if(_pic.size() > 2) {
+				if (_pic.size() > 2) {
 					POINTFLOAT t;
-					while (!IsPointInHull(minY, _pic)) {
-						for (int i = 0; i < _shell.size() - 1; i++) {
-							t = _shell[i];
-							_shell[i] = _shell[i + 1];
-							_shell[i + 1] = t;
+					while (!IsPointHull2(minY, _pic)) {
+						if ((Proverka.x == _shell[0].x) && (Proverka.y == _shell[0].y) && one == true) {
+							//ищем пикет
+							float dis= Distance(_shell[0],_pic[0].coord );
+							POINTFLOAT coorddis= _pic[0].coord;
+							for (size_t i = 0; i < _pic.size(); i++) {
+								if (Distance(_shell[0], _pic[i].coord) < dis) {
+									dis = Distance(_shell[0], _pic[i].coord);
+									coorddis = _pic[i].coord;
+								}
+							}
+							//ищем ближайшую точку от пикета до оболочки
+							float minDis = Distance(_shell[0], coorddis);
+							POINTFLOAT minCoordDis = _shell[0];
+							for (int i = 0; i < _shell.size(); i++) {
+								if (Distance(_shell[i], coorddis) < minDis) {
+									minCoordDis = _shell[i];
+									minDis = Distance(_shell[i], coorddis);
+								}
+							}
+
+							//while (_shell[_shell.size()-1].x != minCoordDis.x    && _shell[_shell.size() - 1].y != minCoordDis.y) {
+							//	POINTFLOAT pop = _shell[0];
+							//	one = true;
+							//	for (int i = 0; i < _shell.size() - 1; i++) {
+							//		_shell[i] = _shell[i + 1];
+							//	}
+							//}
+							break;
 						}
+						POINTFLOAT pop=_shell[0];
+						one = true;
+						for (int i = 0; i < _shell.size() - 1; i++) {
+							_shell[i] = _shell[i + 1];
+						}
+						_shell[_shell.size() - 1] = pop;
+						/*for (int i = 1; i < _shell.size() - 1; i++) {
+							t = _shell[i];
+							_shell[i] = _shell[i - 1];
+							pop = _shell[i + 1];
+							_shell[i + 1] = t;
+						}*/
+
+
 						bool neww = false;
 						for (size_t i = 0; i < _shell.size() - 1; i++) {
 							if (minY.x == _shell[i].x && minY.y == _shell[i].y) {
 								minY = _shell[i + 1];
 								neww = true;
 							}
-						}
+						}//посмотреть чем явл мину
 						if (!neww) {
 							if (minY.x == _shell[_shell.size() - 1].x && minY.y == _shell[_shell.size() - 1].y) {
 								minY = _shell[0];
