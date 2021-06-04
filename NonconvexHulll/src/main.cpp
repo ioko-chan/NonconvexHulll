@@ -68,31 +68,56 @@ int main() {
 		return -1;
 	}
 
-	//  вводим точки 
-	int countPoints;
-	std::cout << "Number of points:" << std::endl;
-	std::cin >> countPoints;
+	// водим количество пикетов и к каждому пикетту количество точек, ему принадлежащие
+	std::vector<Picket> inputPickets;
 	std::vector<POINTFLOAT> inputPoints;
-	POINTFLOAT point;
-	for (size_t i = 0; i < countPoints; i++){
-		std::cout <<"Enter "<< i+1<<" point: " << std::endl;
-		std::cin >> point.x>> point.y;
-		inputPoints.push_back(point);
+	int countPickets;
+	std::cout << "Number of pickets  : " << std::endl;
+	std::cin >> countPickets;
+	Picket picket;
+	for (size_t i = 0; i < countPickets; i++) {
+
+		std::cout << "Enter " << i + 1 << " picket: " << std::endl;
+		std::cin >> picket.coord.x >> picket.coord.y;
+		inputPickets.push_back(picket);
+
+		int countPoints;
+		std::cout << "Number of points:" << std::endl;
+		std::cin >> countPoints;
+		POINTFLOAT point;
+		for (size_t j = 0; j < countPoints; j++) {
+			std::cout << "Enter " << i + 1 << " point: " << std::endl;
+			std::cin >> point.x >> point.y;
+			inputPickets[i].firingPoint.push_back(point);
+			inputPoints.push_back(point);
+		}
 	}
 
+	////  вводим точки 
+	//int countPoints;
+	//std::cout << "Number of points:" << std::endl;
+	//std::cin >> countPoints;
+	//std::vector<POINTFLOAT> inputPoints;
+	//POINTFLOAT point;
+	//for (size_t i = 0; i < countPoints; i++){
+	//	std::cout <<"Enter "<< i+1<<" point: " << std::endl;
+	//	std::cin >> point.x>> point.y;
+	//	inputPoints.push_back(point);
+	//}
+
 	//  вводим пикеты
-	std::vector<POINTFLOAT> inputPickets;
-	int countPickets;
-	std::cout << "Number of pickets  : "<< std::endl;
-	std::cin >> countPickets;
-	POINTFLOAT picket;
+	//std::vector<POINTFLOAT> inputPickets;
+	//int countPickets;
+	//std::cout << "Number of pickets  : "<< std::endl;
+	//std::cin >> countPickets;
+	/*POINTFLOAT picket;
 	for (size_t i = 0; i < countPickets; i++) {
 		std::cout << "Enter " << i + 1 << " picket: " << std::endl;
 		std::cin >> picket.x >> picket.y;
 		inputPickets.push_back(picket);
-	}
+	}*/
 
-	ShellingAlgorithm outputPicketFiring(inputPoints, inputPickets);
+	ShellingAlgorithm outputPicketFiring( inputPickets);
 
 	std::vector<Picket> PicketFiring = outputPicketFiring.ListOfDistributedPoints();
 
@@ -107,27 +132,32 @@ int main() {
 		q.push_back(s);
 	}
 
-	std::vector<POINTFLOAT> shell = a.Shell();
-	std::vector<POINTFLOAT> qq;
-	POINTFLOAT z;
-	z.x = 0; z.y = 0;
-	qq.push_back(z);
+	//std::vector<POINTFLOAT> shell = a.Shell();
+	//std::vector<POINTFLOAT> qq;
+	//POINTFLOAT z;
+	//z.x = 0; z.y = 0;
+	//qq.push_back(z);
 	std::vector < POINTFLOAT > wer;
-	std::vector < POINTFLOAT > wer1;
+	//std::vector < POINTFLOAT > wer1;
 	for (int i = 0; i < inputPickets.size(); i++) {
 		
 		PicketFiring[i].pointsSheellPickets = q[i].Shell();
-		//wer.push_back(q[i].HullOfPickets(PicketFiring[i].pointsSheellPickets, PicketFiring));
-		//wer1.push_back(q[i].HullOfPickets1(PicketFiring[i].pointsSheellPickets, PicketFiring));
+	//wer.push_back(q[i].HullOfPickets(PicketFiring[i].pointsSheellPickets, PicketFiring));
+	//	//wer1.push_back(q[i].HullOfPickets1(PicketFiring[i].pointsSheellPickets, PicketFiring));
 	}
-	POINTFLOAT zxc;
-	zxc.x = 0;
-	zxc.y = 0;
-	std::vector<POINTFLOAT> newPic;
-	if (IsPointInHull(zxc, PicketFiring)) {
-		JarvisAlgorithm ea(inputPickets, false, PicketFiring);
-		newPic = ea.Shell();
+	//POINTFLOAT zxc;
+	//zxc.x = 0;
+	//zxc.y = 0;
+	//std::vector<POINTFLOAT> newPic;
+	std::vector<POINTFLOAT> inputPicketss;
+	for (int i = 0; i < inputPickets.size(); i++) {
+		inputPicketss.push_back(inputPickets[i].coord);
 	}
+	//
+	//if (IsPointInHull(zxc, PicketFiring)) {
+	//	JarvisAlgorithm ea(inputPicketss, false, PicketFiring);
+	//	newPic = ea.Shell();
+	//}
 
 	NonconvexHullAlgorithm output(PicketFiring, a.Shell());
 	auto out = output.NonConvexHull();
@@ -156,11 +186,11 @@ int main() {
 		glColor3f(0,0,1);
 		ShowPoints(inputPoints);
 		
-		ShowLines(PicketFiring);
+		ShowLines(inputPickets);
 		
 		glColor3f(1, 1, 0);
-		ShowPoints(wer);
-		//ShowPoints(wer1);
+		//ShowPoints(wer);
+		
 
 		for (int i = 0; i < inputPickets.size();i++) {
 			
@@ -172,10 +202,10 @@ int main() {
 
 			ShowLinesToPoints(outputPicketFiring.ListOfDistributedPicketsForShell());
 		}
-		ShowPoints(inputPickets);
+		ShowPoints(inputPicketss);
 		glColor3f(0.7, 0, 1);
 		//ShowLinesToPoints(out);
-		ShowLinesToPoints(shell);// отрисовываем оболочку выпуклую
+		//ShowLinesToPoints(shell);// отрисовываем оболочку выпуклую
 
 		glfwSwapBuffers(window);//меняем текущей буффер
 		glfwPollEvents();

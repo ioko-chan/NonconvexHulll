@@ -10,45 +10,11 @@ struct Picket {
 
 class ShellingAlgorithm {
 public:
-	ShellingAlgorithm(std::vector<POINTFLOAT> &points, std::vector<POINTFLOAT> &pickets):_coordsPoints(points){
-		Picket a;
-		for (auto i : pickets) {
-			a.coord.x=i.x;
-			a.coord.y = i.y;
-			_coordsPickets.push_back(a);
-		}
-		DistributionOfPointsToPickets();
+	ShellingAlgorithm( std::vector<Picket> &pickets):_coordsPickets(pickets){
 		Polygon();
 	}
 
-	float Distance(const POINTFLOAT &point1,const POINTFLOAT &point2) {
-		float value = pow((point2.x - point1.x),2)+ pow((point2.y - point1.y), 2);
-		return sqrt(value);
-	}
 
-	void DistributionOfPointsToPickets() {
-		for (auto i : _coordsPoints) {
-			float minDistance = Distance(i, _coordsPickets[0].coord);
-			POINTFLOAT minDisCoord = _coordsPickets[0].coord;
-			for (auto j : _coordsPickets) {
-				float dis = Distance(i, j.coord);
-				if (dis < minDistance) {
-					minDistance = dis;
-					minDisCoord.x = j.coord.x;
-					minDisCoord.y = j.coord.y;
-				}
-			}
-			/*std::cout<<minDistance<<std::endl;*/
-			for (int j = 0; j < _coordsPickets.size();j++) {
-				if (_coordsPickets[j].coord.x == minDisCoord.x && _coordsPickets[j].coord.y == minDisCoord.y) {
-					_coordsPickets[j].firingPoints++;
-					_coordsPickets[j].firingPoint.push_back(i);
-				}
-			}
-		}
-
-		
-	}
 
 	double HoleAngle(float a, float b) {
 		float res2 = atan2(a, b);

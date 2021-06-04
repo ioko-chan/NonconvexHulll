@@ -401,14 +401,22 @@ public:
 					while (!IsPointHull2(minY, _pic)) {
 						if ((Proverka.x == _shell[0].x) && (Proverka.y == _shell[0].y) && one == true) {
 							//ищем пикет
-							float dis= Distance(_shell[0],_pic[0].coord );
-							POINTFLOAT coorddis= _pic[0].coord;
-							for (size_t i = 0; i < _pic.size(); i++) {
+							POINTFLOAT coorddis = _pic[0].coord;
+							//float dis= Distance(_shell[0],_pic[0].coord );
+							for (auto i : _pic) {
+								for (auto y : i.firingPoint) {
+									if (y.x == _shell[0].x && y.y == _shell[0].y) {
+										coorddis = y;
+									}
+								}
+							}
+							//POINTFLOAT coorddis= _pic[0].coord;
+							/*for (size_t i = 0; i < _pic.size(); i++) {
 								if (Distance(_shell[0], _pic[i].coord) < dis) {
 									dis = Distance(_shell[0], _pic[i].coord);
 									coorddis = _pic[i].coord;
 								}
-							}
+							}*/
 							//ищем ближайшую точку от пикета до оболочки
 							float minDis = Distance(_shell[0], coorddis);
 							POINTFLOAT minCoordDis = _shell[0];
