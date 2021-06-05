@@ -149,8 +149,8 @@ public:
 					maxY = _pickets[0].coord;
 				}
 
-				if (_pickets[_pickets.size() - 1].coord.y < _pickets[0].coord.y) {
-					maxY = _pickets[0].coord;
+				if (_pickets[_pickets.size() - 1].coord.y >= _pickets[0].coord.y) {
+					maxY = _pickets[_pickets.size() - 1].coord;
 				}
 				if (currentPoint.y == maxY.y && currentPoint.x < maxX.x) {
 					count++;
@@ -192,6 +192,40 @@ public:
 		else {
 			return true;
 		}
+	}
+
+	bool IsPointHulss(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
+		std::vector<Picket> shellss;
+		Picket th;
+		for (auto i : _pickets) {
+			for (auto k : i.firingPoint) {
+				if (currentPoint.x == k.x && currentPoint.y == k.y) {
+					th = i;
+				}
+			}
+		}
+
+		for (auto i : _pickets) {
+			if (i.coord.x == th.coord.x && i.coord.y == th.coord.y)
+				continue;
+			else{
+				shellss.push_back(i);
+			}
+		}
+
+		for (auto i : shellss) {
+			std::vector<Picket> fir;
+			for (auto q : i.firingPoint) {
+				Picket cur;
+				cur.coord.x = q.x;
+				cur.coord.y = q.y;
+				fir.push_back(cur);
+			}
+			if (IsPointHull2(currentPoint, fir)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	bool IsPointInHull(POINTFLOAT currentPoint) {
@@ -315,7 +349,7 @@ public:
 		for (auto u : _pickets) {
 			for (auto p : u.pointsSheellPickets) {
 				if (_pickets.size() > 2) {
-					if (!IsPointHull2(p,_pickets)) {
+					if (!IsPointHull2(p,_pickets) && !IsPointHulss(p, _pickets)) {
 						_NonConvexHull1.push_back(p);
 						std::cout << p.x << " " << p.y << std::endl;
 					}
