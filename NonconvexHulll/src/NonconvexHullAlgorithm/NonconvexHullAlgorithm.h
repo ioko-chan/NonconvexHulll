@@ -349,7 +349,7 @@ public:
 		for (auto u : _pickets) {
 			for (auto p : u.pointsSheellPickets) {
 				if (_pickets.size() > 2) {
-					if (!IsPointHull2(p,_pickets) && !IsPointHulss(p, _pickets)) {
+					if (!IsPointHull2(p,_pickets) ) {
 						_NonConvexHull1.push_back(p);
 						std::cout << p.x << " " << p.y << std::endl;
 					}
