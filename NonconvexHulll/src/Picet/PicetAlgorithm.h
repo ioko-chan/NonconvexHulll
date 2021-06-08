@@ -11,7 +11,10 @@ struct Picket {
 class ShellingAlgorithm {
 public:
 	ShellingAlgorithm( std::vector<Picket> &pickets):_coordsPickets(pickets){
-		Polygon();
+		//Polygon();
+		for (size_t i = 0; i < _coordsPickets.size(); i++) {
+			_pickets.push_back(_coordsPickets[i].coord);
+		}
 	}
 
 
