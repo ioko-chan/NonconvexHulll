@@ -119,6 +119,15 @@ public:
 			POINTFLOAT maxY;
 			POINTFLOAT maxX;
 			POINTFLOAT minY;
+			POINTFLOAT minX;
+			if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
+				minX = _pickets[i + 1].coord;
+			}
+
+
+			if (_pickets[i].coord.x < _pickets[i + 1].coord.x) {
+				minX = _pickets[i].coord;
+			}
 			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
 				minY = _pickets[i + 1].coord;
 			}
@@ -139,7 +148,7 @@ public:
 			
 			}
 
-				if (currentPoint.y == maxY.y && currentPoint.x < maxX.x) {
+				if (currentPoint.y == maxY.y && currentPoint.x < maxX.x && currentPoint.x > minX.x) {
 					count++;
 					continue;
 				}
@@ -410,13 +419,7 @@ public:
 									}
 								}
 							}
-							//POINTFLOAT coorddis= _pic[0].coord;
-							/*for (size_t i = 0; i < _pic.size(); i++) {
-								if (Distance(_shell[0], _pic[i].coord) < dis) {
-									dis = Distance(_shell[0], _pic[i].coord);
-									coorddis = _pic[i].coord;
-								}
-							}*/
+							
 							//ищем ближайшую точку от пикета до оболочки
 							float minDis = Distance(_shell[0], coorddis);
 							POINTFLOAT minCoordDis = _shell[0];
@@ -427,13 +430,6 @@ public:
 								}
 							}
 
-							//while (_shell[_shell.size()-1].x != minCoordDis.x    && _shell[_shell.size() - 1].y != minCoordDis.y) {
-							//	POINTFLOAT pop = _shell[0];
-							//	one = true;
-							//	for (int i = 0; i < _shell.size() - 1; i++) {
-							//		_shell[i] = _shell[i + 1];
-							//	}
-							//}
 							break;
 						}
 						POINTFLOAT pop=_shell[0];

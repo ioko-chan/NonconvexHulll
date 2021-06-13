@@ -61,6 +61,12 @@ bool IsPointInHull(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
 	return flag;
 }
 
+//
+//
+//bool PointIntersectsLine(std::vector<Picket> _pic , POINTFLOAT one, POINTFLOAT two) {
+//
+//}
+
 
 int main() {
 	if (!glfwInit()) {

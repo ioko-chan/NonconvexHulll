@@ -73,6 +73,15 @@ public:
 			POINTFLOAT maxY;
 			POINTFLOAT maxX;
 			POINTFLOAT minY;
+			POINTFLOAT minX;
+			if (_pickets[i].coord.x > _pickets[i + 1].coord.x) {
+				minX = _pickets[i + 1].coord;
+			}
+
+
+			if (_pickets[i].coord.x <= _pickets[i + 1].coord.x) {
+				minX = _pickets[i].coord;
+			}
 			if (_pickets[i].coord.y > _pickets[i + 1].coord.y) {
 				minY = _pickets[i + 1].coord;
 			}
@@ -96,7 +105,7 @@ public:
 			if (_pickets[i].coord.y < _pickets[i + 1].coord.y) {
 				maxY = _pickets[i + 1].coord;
 			}
-			if (currentPoint.y == maxY.y && currentPoint.x < maxX.x) {
+			if (currentPoint.y == maxY.y && currentPoint.x < maxX.x  && currentPoint.x > minX.x) {
 				count++;
 				continue;
 			}
@@ -192,6 +201,18 @@ public:
 		else {
 			return true;
 		}
+	}
+
+	Picket IsPoint(POINTFLOAT cur, std::vector<Picket> _pickets) {
+		Picket th;
+		for (auto i : _pickets) {
+			for (auto k : i.firingPoint) {
+				if (cur.x == k.x && cur.y == k.y) {
+					th = i;
+				}
+			}
+		}
+		return th;
 	}
 
 	bool IsPointHulss(POINTFLOAT currentPoint, std::vector<Picket> _pickets) {
@@ -345,23 +366,112 @@ public:
 		return false;
 	}
 
+	Picket FindPick(POINTFLOAT cur) {
+		auto i = std::find_if(_pickets.begin(), _pickets.end(), find_point_pickets(cur));
+		return (*i);
+	}
+
+	bool Pointdist(POINTFLOAT a , POINTFLOAT b) {
+		if (FindPick(a).coord.x == FindPick(b).coord.x && FindPick(a).coord.y == FindPick(b).coord.y)
+			return true;
+		return false;
+	}
+
 	void NonConvex1() {
+		std::vector<Picket> change;
+		for (int i = 1; i < _pickets.size(); i++) {
+			int countPointInto = 0;
+			for (int j = 0; j < _pickets[i].pointsSheellPickets.size(); j++) {
+				if (!IsPointHull2(_pickets[i].pointsSheellPickets[j], _pickets)) {
+					countPointInto++;
+				}
+			}
+			if (countPointInto == _pickets[i].pointsSheellPickets.size()) {
+				change.push_back(_pickets[i]);
+			}
+		}
+		POINTFLOAT SYD;
+		for (int i = 0; i < _pickets.size(); i++) {
+			if (_pickets[i].coord.x == change[1].coord.x && _pickets[i].coord.y == change[1].coord.y) {
+				
+				for (int u = 0; u < _pickets[i - 1].pointsSheellPickets.size(); u++) {
+					if (!IsPointHull2(_pickets[i - 1].pointsSheellPickets[u], _pickets)) {
+						SYD = _pickets[i - 1].pointsSheellPickets[u];
+					}
+				}
+			}
+		}
+		int minDis = Distance(change[1].pointsSheellPickets[0],SYD);
+		POINTFLOAT min = change[1].pointsSheellPickets[0];
+		for (int i = 0; i < change[1].pointsSheellPickets.size(); i++) {
+			if (minDis > Distance(change[1].pointsSheellPickets[i], SYD)) {
+				minDis = Distance(change[1].pointsSheellPickets[i], SYD);
+				min = change[1].pointsSheellPickets[i];
+			}
+		}
+		while (1) {
+			if (change[1].pointsSheellPickets[0].x != min.x && change[1].pointsSheellPickets[0].y != min.y) {
+				POINTFLOAT pop = change[1].pointsSheellPickets[0];
+				for (int i = 0; i < change[1].pointsSheellPickets.size() - 1; i++) {
+					change[1].pointsSheellPickets[i] = change[1].pointsSheellPickets[i + 1];
+				}
+				change[1].pointsSheellPickets[change[1].pointsSheellPickets.size() - 1] = pop;
+			}
+			else {
+				break;
+			}
+		}
+
 		for (auto u : _pickets) {
-			for (auto p : u.pointsSheellPickets) {
+			if (u.coord.x == change[1].coord.x && u.coord.y == change[1].coord.y) {
+				u.pointsSheellPickets = change[1].pointsSheellPickets;
+			}
+		}
+		for (int i = 0; i < _pickets.size(); i++) {
+			if (_pickets[i].coord.x == change[1].coord.x && _pickets[i].coord.y == change[1].coord.y) {
+				_pickets[i].pointsSheellPickets = change[1].pointsSheellPickets;
+			}
+		}
+		for (auto u : _pickets) {
+			for (auto p = 0; p < u.pointsSheellPickets.size(); p++) {
 				if (_pickets.size() > 2) {
-					if (!IsPointHull2(p,_pickets) ) {
-						_NonConvexHull1.push_back(p);
-						std::cout << p.x << " " << p.y << std::endl;
+					if (!IsPointHull2(u.pointsSheellPickets[p],_pickets ))  {
+						
+							_NonConvexHull1.push_back(u.pointsSheellPickets[p]);
+							std::cout << u.pointsSheellPickets[p].x << " " << u.pointsSheellPickets[p].y << std::endl;
+						
 					}
 				}
 				else {
-					_NonConvexHull1.push_back(p);
-					std::cout << p.x << " " << p.y << std::endl;
+					_NonConvexHull1.push_back(u.pointsSheellPickets[p]);
+					std::cout << u.pointsSheellPickets[p].x << " " << u.pointsSheellPickets[p].y << std::endl;
 				}
 			}
 		}
 
+		/*for (int i = 0; i < _NonConvexHull1.size(); i++) {
+			if (IsPoint(_NonConvexHull1[i], _pickets).coord.x == change[0].coord.x && IsPoint(_NonConvexHull1[i], _pickets).coord.y == change[0].coord.y) {
+
+			}
+		}*/
+
+		for (int i = 1; i < _NonConvexHull1.size()-1; i++) {
+			if (!Pointdist(_NonConvexHull1[i], _NonConvexHull1[i + 1])) {
+				if (_NonConvexHull1[i].y == _NonConvexHull1[i + 1].y && abs(_NonConvexHull1[i].x - _NonConvexHull1[i - 1].x) > abs(_NonConvexHull1[i + 1].x - _NonConvexHull1[i - 1].x)) {
+					std::swap(_NonConvexHull1[i], _NonConvexHull1[i + 1]);
+				}
+			}
+		}
+		if (!Pointdist(_NonConvexHull1[_NonConvexHull1.size() - 1], _NonConvexHull1[0])) {
+			if (_NonConvexHull1[_NonConvexHull1.size() - 1].y == _NonConvexHull1[0].y && abs(_NonConvexHull1[_NonConvexHull1.size() - 1].x - _NonConvexHull1[_NonConvexHull1.size() - 2].x) > abs(_NonConvexHull1[0].x - _NonConvexHull1[_NonConvexHull1.size() - 2].x)) {
+				std::swap(_NonConvexHull1[_NonConvexHull1.size() - 1], _NonConvexHull1[0]);
+			}
+		}
+
+
 	}
+
+	
 
 	std::vector<POINTFLOAT> NonConvexHull(){
 		return _NonConvexHull1;
