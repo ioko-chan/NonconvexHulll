@@ -429,15 +429,18 @@ public:
 				}
 			}
 		}
-
-		for (auto u : _pickets) {
-			if (u.coord.x == change[1].coord.x && u.coord.y == change[1].coord.y) {
-				u.pointsSheellPickets = change[1].pointsSheellPickets;
+		for (int t = 0; t < change.size(); t++) {
+			for (auto u : _pickets) {
+				if (u.coord.x == change[t].coord.x && u.coord.y == change[t].coord.y) {
+					u.pointsSheellPickets = change[t].pointsSheellPickets;
+				}
 			}
 		}
-		for (int i = 0; i < _pickets.size(); i++) {
-			if (_pickets[i].coord.x == change[1].coord.x && _pickets[i].coord.y == change[1].coord.y) {
-				_pickets[i].pointsSheellPickets = change[1].pointsSheellPickets;
+		for (int t = 0; t < change.size(); t++) {
+			for (int i = 0; i < _pickets.size(); i++) {
+				if (_pickets[i].coord.x == change[t].coord.x && _pickets[i].coord.y == change[t].coord.y) {
+					_pickets[i].pointsSheellPickets = change[t].pointsSheellPickets;
+				}
 			}
 		}
 		for (auto u : _pickets) {
