@@ -390,35 +390,43 @@ public:
 				change.push_back(_pickets[i]);
 			}
 		}
-		POINTFLOAT SYD;
-		for (int i = 0; i < _pickets.size(); i++) {
-			if (_pickets[i].coord.x == change[1].coord.x && _pickets[i].coord.y == change[1].coord.y) {
-				
-				for (int u = 0; u < _pickets[i - 1].pointsSheellPickets.size(); u++) {
-					if (!IsPointHull2(_pickets[i - 1].pointsSheellPickets[u], _pickets)) {
-						SYD = _pickets[i - 1].pointsSheellPickets[u];
+		std::vector<POINTFLOAT> SYD;
+		for (int t = 0; t < change.size(); t++) {
+			for (int i = 0; i < _pickets.size(); i++) {
+				if (_pickets[i].coord.x == change[t].coord.x && _pickets[i].coord.y == change[t].coord.y) {
+					SYD.push_back(_pickets[0].pointsSheellPickets[0]);
+					for (int u = 0; u < _pickets[i - 1].pointsSheellPickets.size(); u++) {
+						if (!IsPointHull2(_pickets[i - 1].pointsSheellPickets[u], _pickets)) {
+							SYD[t] = _pickets[i - 1].pointsSheellPickets[u];
+						}
 					}
 				}
 			}
 		}
-		int minDis = Distance(change[1].pointsSheellPickets[0],SYD);
-		POINTFLOAT min = change[1].pointsSheellPickets[0];
-		for (int i = 0; i < change[1].pointsSheellPickets.size(); i++) {
-			if (minDis > Distance(change[1].pointsSheellPickets[i], SYD)) {
-				minDis = Distance(change[1].pointsSheellPickets[i], SYD);
-				min = change[1].pointsSheellPickets[i];
+		std::vector<int> minDis ;
+		std::vector <POINTFLOAT> min;
+		for (int t = 0; t < change.size(); t++) {
+			minDis.push_back (Distance(change[t].pointsSheellPickets[0], SYD[t]));
+			min.push_back(change[t].pointsSheellPickets[0]);
+			for (int i = 0; i < change[t].pointsSheellPickets.size(); i++) {
+				if (minDis[t] > Distance(change[t].pointsSheellPickets[i], SYD[t])) {
+					minDis[t] = Distance(change[t].pointsSheellPickets[i], SYD[t]);
+					min[t] = change[t].pointsSheellPickets[i];
+				}
 			}
 		}
-		while (1) {
-			if (change[1].pointsSheellPickets[0].x != min.x && change[1].pointsSheellPickets[0].y != min.y) {
-				POINTFLOAT pop = change[1].pointsSheellPickets[0];
-				for (int i = 0; i < change[1].pointsSheellPickets.size() - 1; i++) {
-					change[1].pointsSheellPickets[i] = change[1].pointsSheellPickets[i + 1];
+		for (int t = 0; t < change.size(); t++) {
+			while (1) {
+				if (change[t].pointsSheellPickets[0].x != min[t].x && change[t].pointsSheellPickets[0].y != min[t].y) {
+					POINTFLOAT pop = change[t].pointsSheellPickets[0];
+					for (int i = 0; i < change[t].pointsSheellPickets.size() - 1; i++) {
+						change[t].pointsSheellPickets[i] = change[t].pointsSheellPickets[i + 1];
+					}
+					change[t].pointsSheellPickets[change[t].pointsSheellPickets.size() - 1] = pop;
 				}
-				change[1].pointsSheellPickets[change[1].pointsSheellPickets.size() - 1] = pop;
-			}
-			else {
-				break;
+				else {
+					break;
+				}
 			}
 		}
 
